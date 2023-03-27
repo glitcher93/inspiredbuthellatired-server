@@ -13,13 +13,17 @@ const convertImage = async (req: Request, res: Response, next: NextFunction) => 
 
     const newPath = path.replace(/\.jpg|\.jpeg|\.png|\.webp/gi, '.webp');
 
-    await sharp(path)
-        .webp({ quality: 80 })
-        .toFile(newPath);
+    try {
+        await sharp(path)
+            .webp({ quality: 80 })
+            .toFile(newPath);
 
-    req.file!.path = newPath;
+        req.file!.path = newPath;
 
-    next();
+        next();
+    } catch (e) {
+        return res.status(500).json({ message: 'Error converting image', error: e });
+    }
 }
 
 export default convertImage;

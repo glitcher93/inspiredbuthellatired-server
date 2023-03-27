@@ -20,10 +20,15 @@ const convertImage = (req, res, next) => __awaiter(void 0, void 0, void 0, funct
     }
     const { path } = file;
     const newPath = path.replace(/\.jpg|\.jpeg|\.png|\.webp/gi, '.webp');
-    yield (0, sharp_1.default)(path)
-        .webp({ quality: 80 })
-        .toFile(newPath);
-    req.file.path = newPath;
-    next();
+    try {
+        yield (0, sharp_1.default)(path)
+            .webp({ quality: 80 })
+            .toFile(newPath);
+        req.file.path = newPath;
+        next();
+    }
+    catch (e) {
+        return res.status(500).json({ message: 'Error converting image', error: e });
+    }
 });
 exports.default = convertImage;
