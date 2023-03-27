@@ -44,6 +44,15 @@ function up(knex) {
                 .primary()
                 .defaultTo(knex.raw("GEN_RANDOM_UUID()"));
             table
+                .string("userId")
+                .notNullable();
+            table
+                .string("customerId")
+                .notNullable();
+            table
+                .string("paymentIntentId")
+                .notNullable();
+            table
                 .specificType("products", "UUID[]")
                 .notNullable();
             table
@@ -51,10 +60,31 @@ function up(knex) {
                 .unsigned()
                 .notNullable();
             table
-                .string("orderNumber")
+                .integer("subtotal")
+                .unsigned()
                 .notNullable();
             table
-                .integer("orderCreatedAt")
+                .integer("total")
+                .unsigned()
+                .notNullable();
+            table
+                .string("name");
+            table
+                .string("addressLineOne")
+                .notNullable();
+            table
+                .string("addressLineTwo");
+            table
+                .string("city")
+                .notNullable();
+            table
+                .string("state")
+                .notNullable();
+            table
+                .string("phoneNumber")
+                .notNullable();
+            table
+                .string("paymentStatus")
                 .notNullable();
             table
                 .boolean("isFulfilled")
@@ -62,6 +92,8 @@ function up(knex) {
                 .notNullable();
             table
                 .string("trackingNumber");
+            table
+                .timestamps(true, true, true);
         })
             .createTable('admin', (table) => {
             table
