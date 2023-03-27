@@ -30,8 +30,8 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         data = event.data.object;
         eventType = event.type;
     }
-    catch ({ message }) {
-        res.status(400).send(`Webhook Error: ${message}`);
+    catch (err) {
+        res.status(400).json(err);
         return;
     }
     if (eventType === "checkout.session.completed") {
@@ -60,13 +60,13 @@ const webhook = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 yield (0, db_1.default)('orders').insert(newOrder);
                 return res.status(201).json({ message: 'Order created' });
             }
-            catch ({ message }) {
-                res.status(400).send(`Webhook Error: ${message}`);
+            catch (err) {
+                res.status(400).json(err);
                 return;
             }
         }
-        catch ({ message }) {
-            res.status(400).send(`Webhook Error: ${message}`);
+        catch (err) {
+            res.status(400).json(err);
             return;
         }
     }

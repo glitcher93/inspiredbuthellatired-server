@@ -20,7 +20,7 @@ const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         return res.status(200).json(orders);
     }
     catch (_a) {
-        return res.status(400).json({ error: 'error getting orders' });
+        return res.status(400).json({ error: 'Error getting orders' });
     }
 });
 exports.getAllOrders = getAllOrders;
@@ -34,8 +34,8 @@ const patchOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             message: 'order updated',
         });
     }
-    catch ({ message }) {
-        return res.status(400).json({ error: message });
+    catch (err) {
+        return res.status(400).json({ err });
     }
 });
 exports.patchOrder = patchOrder;

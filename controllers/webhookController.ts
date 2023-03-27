@@ -24,8 +24,8 @@ export const webhook = async (req: Request, res: Response) => {
         event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
         data = event.data.object as any;
         eventType = event.type;
-    } catch ({ message }) {
-        res.status(400).send(`Webhook Error: ${message}`);
+    } catch (err) {
+        res.status(400).json(err);
         return;
     }
 
@@ -58,13 +58,13 @@ export const webhook = async (req: Request, res: Response) => {
             try {
                 await db('orders').insert(newOrder);
                 return res.status(201).json({ message: 'Order created' });
-            } catch ({ message }) {
-                res.status(400).send(`Webhook Error: ${message}`);
+            } catch (err) {
+                res.status(400).json(err);
                 return;
             }
 
-        } catch ({ message }) {
-            res.status(400).send(`Webhook Error: ${message}`);
+        } catch (err) {
+            res.status(400).json(err);
             return;
         }
     }

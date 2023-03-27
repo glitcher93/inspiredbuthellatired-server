@@ -6,7 +6,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
         const orders = await db('orders');
         return res.status(200).json(orders);
     } catch {
-        return res.status(400).json({error: 'error getting orders'})
+        return res.status(400).json({error: 'Error getting orders'})
     }
 }
 
@@ -20,7 +20,7 @@ export const patchOrder = async (req: Request, res: Response) => {
         return res.status(200).json({
             message: 'order updated',
         });
-    } catch ({ message }) {
-        return res.status(400).json({error: message})
+    } catch (err) {
+        return res.status(400).json({err})
     }
 }
