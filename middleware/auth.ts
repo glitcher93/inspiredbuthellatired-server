@@ -7,7 +7,7 @@ dotenv.config();
 
 const secret = process.env.JWT_SECRET as Secret;
 
-const auth = async (req: IRequest, res: Response, next: NextFunction) => {
+const auth = (req: IRequest, res: Response, next: NextFunction) => {
     if (!req.headers.authorization) {
         res.status(403).json({
             message: "No token, access denied"
@@ -15,7 +15,7 @@ const auth = async (req: IRequest, res: Response, next: NextFunction) => {
     }
     const token = req.headers.authorization!.split(' ')[1];
     try {
-        await jwt.verify(token, secret, (err, decoded) => {
+        jwt.verify(token, secret, (err, decoded) => {
             if (err) {
                 return res.status(401).json({
                     message: "Token is expired or invalid"
