@@ -44,7 +44,7 @@ function up(knex) {
                 .primary()
                 .defaultTo(knex.raw("GEN_RANDOM_UUID()"));
             table
-                .string("userId")
+                .string("orderId")
                 .notNullable();
             table
                 .string("customerId")

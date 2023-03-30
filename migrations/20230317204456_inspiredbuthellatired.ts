@@ -34,7 +34,7 @@ export async function up(knex: Knex): Promise<void> {
                 .primary()
                 .defaultTo(knex.raw("GEN_RANDOM_UUID()"));
             table
-                .string("userId")
+                .string("orderId")
                 .notNullable();
             table
                 .string("customerId")
