@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductsAdmin = exports.getPrints = exports.getPaintings = exports.getAllProducts = void 0;
+exports.getRandomProducts = exports.getProductsAdmin = exports.getPrints = exports.getPaintings = exports.getAllProducts = void 0;
 const db_1 = __importDefault(require("../db"));
 const getAllProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -54,3 +54,13 @@ const getProductsAdmin = (req, res) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getProductsAdmin = getProductsAdmin;
+const getRandomProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const products = yield (0, db_1.default)('products').orderByRaw('RANDOM()').limit(6);
+        return res.status(200).json(products);
+    }
+    catch (_e) {
+        res.status(400).json({ error: 'error getting products' });
+    }
+});
+exports.getRandomProducts = getRandomProducts;

@@ -37,3 +37,12 @@ export const getProductsAdmin = async (req: Request, res: Response) => {
     }
 }
 
+export const getRandomProducts = async (req: Request, res: Response) => {
+    try {
+        const products = await db('products').orderByRaw('RANDOM()').limit(6);
+        return res.status(200).json(products);
+    } catch {
+        res.status(400).json({error: 'error getting products'})
+    }
+}
+
