@@ -10,11 +10,16 @@ export interface IRequest extends Request {
 }
 
 export interface IItem {
-    id: number 
-    price: number 
+    id: string 
+    priceInCents: number 
     title: string 
     size: string 
     image: string 
     type: string
     quantity: number
+    inStock?: boolean
+}
+
+export interface IItemHash {
+    [key: string]: IItem
 }
