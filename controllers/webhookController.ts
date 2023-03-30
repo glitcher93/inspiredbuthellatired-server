@@ -25,47 +25,53 @@ export const webhook = async (req: Request, res: Response) => {
         data = event.data.object as any;
         eventType = event.type;
     } catch (err) {
-        res.status(400).json(err);
-        return;
+        return res.status(400).json(err);
     }
 
     if (eventType === "checkout.session.completed") {
         try {
             const customer = await stripe.customers.retrieve(data.customer) as Stripe.Customer;
             
-            const items = JSON.parse(data.metadata.items);
+            const items = JSON.parse(customer.metadata.cart);
 
             const itemIds: string = items.map((item: IItem) => item.id);
             const quantities: number = items.map((item: IItem) => item.quantity);
 
             const newOrder = {
-                userId: customer.metadata.userId,
+                orderId: customer.metadata.orderId,
                 customerId: data.customer,
                 paymentIntentId: data.payment_intent,
                 products: itemIds,
                 quantities,
                 subtotal: data.amount_subtotal,
                 total: data.amount_total,
-                name: data.shipping.name,
-                addressLineOne: data.shipping.address.line1,
-                addressLineTwo: data.shipping.address.line2,
-                city: data.shipping.address.city,
-                state: data.shipping.address.state,
-                phoneNumber: data.shipping.phone,
+                name: data.customer_details.name,
+                addressLineOne: data.customer_details.address.line1,
+                addressLineTwo: data.customer_details.address.line2,
+                city: data.customer_details.address.city,
+                state: data.customer_details.address.state,
+                phoneNumber: data.customer_details.phone,
                 paymentStatus: data.payment_status
             }
 
             try {
                 await db('orders').insert(newOrder);
-                return res.status(201).json({ message: 'Order created' });
+                items.forEach(async (item: IItem) => {
+                    if (item.type === 'Painting') {
+                        try {
+                            await db('products').where({id: item.id}).update({inStock: false});
+                            res.status(200).json({received: true}).end()
+                        } catch (err) {
+                            return res.status(400).json(err);
+                        }
+                    }
+                })
             } catch (err) {
-                res.status(400).json(err);
-                return;
+                return res.status(400).json(err);
             }
-
+            
         } catch (err) {
-            res.status(400).json(err);
-            return;
+            return res.status(400).json(err);
         }
     }
 }
