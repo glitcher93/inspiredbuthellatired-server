@@ -9,4 +9,5 @@ const router = express_1.default.Router();
 router.get('/', productsController_1.getAllProducts);
 router.get('/paintings', productsController_1.getPaintings);
 router.get('/prints', productsController_1.getPrints);
+router.get('/featured', productsController_1.getRandomProducts);
 exports.default = router;
