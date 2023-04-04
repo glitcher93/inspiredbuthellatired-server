@@ -5,6 +5,7 @@ import products from './routes/products';
 import webhook from './routes/webhook';
 import checkout from './routes/checkout';
 import orders from './routes/orders';
+import admin from './routes/admin';
 
 dotenv.config();
 
@@ -18,6 +19,7 @@ app.use(express.static('public'));
 
 app.use('/products', products);
 app.use('/checkout', checkout);
-app.use('/orders', orders)
+app.use('/orders', orders);
+app.use('/admin', admin);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
