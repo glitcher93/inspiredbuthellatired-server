@@ -50,6 +50,7 @@ export const webhook = async (req: Request, res: Response) => {
                 addressLineTwo: data.customer_details.address.line2,
                 city: data.customer_details.address.city,
                 state: data.customer_details.address.state,
+                postalCode: data.customer_details.address.postal_code,
                 phoneNumber: data.customer_details.phone,
                 paymentStatus: data.payment_status
             }
