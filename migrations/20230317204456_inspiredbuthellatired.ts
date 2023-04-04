@@ -59,6 +59,7 @@ export async function up(knex: Knex): Promise<void> {
                 .notNullable();
             table
                 .string("name")
+                .notNullable();
             table
                 .string("addressLineOne")
                 .notNullable()
@@ -69,6 +70,9 @@ export async function up(knex: Knex): Promise<void> {
                 .notNullable()
             table
                 .string("state")
+                .notNullable()
+            table
+                .string("postalCode")
                 .notNullable()
             table
                 .string("phoneNumber")

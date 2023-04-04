@@ -68,7 +68,8 @@ function up(knex) {
                 .unsigned()
                 .notNullable();
             table
-                .string("name");
+                .string("name")
+                .notNullable();
             table
                 .string("addressLineOne")
                 .notNullable();
@@ -79,6 +80,9 @@ function up(knex) {
                 .notNullable();
             table
                 .string("state")
+                .notNullable();
+            table
+                .string("postalCode")
                 .notNullable();
             table
                 .string("phoneNumber")
