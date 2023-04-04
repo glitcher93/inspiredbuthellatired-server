@@ -28,15 +28,6 @@ export const getPrints = async (req: Request, res: Response) => {
     }
 }
 
-export const getProductsAdmin = async (req: Request, res: Response) => {
-    try {
-        const products = await db('products');
-        return res.status(200).json(products);
-    } catch {
-        res.status(400).json({error: 'error getting products'})
-    }
-}
-
 export const getRandomProducts = async (req: Request, res: Response) => {
     try {
         const products = await db('products').orderByRaw('RANDOM()').limit(6);
