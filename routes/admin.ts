@@ -1,16 +1,20 @@
 import express from 'express';
 import { login } from '../controllers/adminController';
-// import { getAllOrders } from '../controllers/ordersController';
+import { addTracking, deleteOrder, getAllOrders, getOrderById, getRecentOrders } from '../controllers/ordersController';
 // import { getAllProducts } from '../controllers/productsController';
-// import auth from '../middleware/auth';
+import auth from '../middleware/auth';
 
 const router = express.Router();
 
 router.post('/login', login);
 
-// router.get('/orders', auth, getAllOrders)
+router.get('/recent-orders', auth, getRecentOrders);
 
-// router.delete('/delete-order/:id', auth)
+router.get('/orders', auth, getAllOrders);
+
+router.patch('/add-tracking/:id', auth, addTracking)
+
+router.delete('/delete-order/:id', auth, deleteOrder)
 
 // router.get('/products', auth, getAllProducts)
 
