@@ -12,23 +12,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const path_1 = __importDefault(require("path"));
 const sharp_1 = __importDefault(require("sharp"));
+const fs_1 = __importDefault(require("fs"));
 const convertImage = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const { file } = req;
-    if (!file) {
+    if (!req.file) {
         return next();
     }
-    const { path } = file;
-    const newPath = path.replace(/\.jpg|\.jpeg|\.png|\.webp/gi, '.webp');
     try {
-        yield (0, sharp_1.default)(path)
-            .webp({ quality: 80 })
-            .toFile(newPath);
-        req.file.path = newPath;
-        next();
+        yield (0, sharp_1.default)(req.file.path)
+            .webp()
+            .toFile(`./public/images/${req.file.filename.replace(path_1.default.extname(req.file.originalname), '.webp')}`);
+        fs_1.default.unlink("public/images/" + req.file.filename, (err) => {
+            if (err) {
+                console.log(err);
+            }
+        });
+        return next();
     }
     catch (e) {
-        return res.status(500).json({ message: 'Error converting image', error: e });
+        return res.status(500).json({ message: 'Error converting image', error: e.message });
     }
 });
 exports.default = convertImage;
