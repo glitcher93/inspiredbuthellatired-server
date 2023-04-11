@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 8080;
 app.use((0, cors_1.default)());
 app.use('/webhook', express_1.default.raw({ type: "application/json" }), webhook_1.default);
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use(express_1.default.static('public'));
 app.use('/products', products_1.default);
 app.use('/checkout', checkout_1.default);
