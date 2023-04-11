@@ -8,7 +8,7 @@ const path_1 = __importDefault(require("path"));
 const storage = multer_1.default.diskStorage({
     destination: './public/images',
     filename: (req, file, cb) => {
-        cb(null, `${file.fieldname}-${Date.now()}${path_1.default.extname(file.originalname)}`);
+        cb(null, `${file.originalname.replace(path_1.default.extname(file.originalname), '')}_${Date.now()}${path_1.default.extname(file.originalname)}`);
     }
 });
 const fileType = (req, file, filterFile) => {
