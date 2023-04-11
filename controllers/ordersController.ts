@@ -179,7 +179,9 @@ export const getOrderById = async (req: Request, res: Response) => {
 }
 
 export const addTracking = async (req: Request, res: Response) => {
-    const { id, trackingNumber } = req.params;
+    const { id } = req.params;
+
+    const { trackingNumber } = req.body;
 
     try {
         await db('orders')

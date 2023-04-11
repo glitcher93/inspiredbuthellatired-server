@@ -190,7 +190,8 @@ const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 });
 exports.getOrderById = getOrderById;
 const addTracking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { id, trackingNumber } = req.params;
+    const { id } = req.params;
+    const { trackingNumber } = req.body;
     try {
         yield (0, db_1.default)('orders')
             .where({ id })
