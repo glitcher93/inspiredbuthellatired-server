@@ -6,16 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const adminController_1 = require("../controllers/adminController");
 const ordersController_1 = require("../controllers/ordersController");
-// import { getAllProducts } from '../controllers/productsController';
 const auth_1 = __importDefault(require("../middleware/auth"));
+const productsController_1 = require("../controllers/productsController");
+const multer_1 = __importDefault(require("../middleware/multer"));
+const imageConversion_1 = __importDefault(require("../middleware/imageConversion"));
 const router = express_1.default.Router();
 router.post('/login', adminController_1.login);
 router.get('/recent-orders', auth_1.default, ordersController_1.getRecentOrders);
 router.get('/orders', auth_1.default, ordersController_1.getAllOrders);
-router.patch('/add-tracking/:id', auth_1.default, ordersController_1.addTracking);
-router.delete('/delete-order/:id', auth_1.default, ordersController_1.deleteOrder);
-// router.get('/products', auth, getAllProducts)
-// router.post('/new-product', auth)
-// router.put('/edit-product/:id', auth)
-// router.delete('/delete-product/:id', auth)
+router.patch('/orders/add-tracking/:id', auth_1.default, ordersController_1.addTracking);
+router.delete('/orders/delete-order/:id', auth_1.default, ordersController_1.deleteOrder);
+router.get('/products', auth_1.default, productsController_1.getAllProducts);
+router.post('/products/add-product', auth_1.default, multer_1.default, imageConversion_1.default, productsController_1.addProduct);
+router.patch('/products/edit-product/:id', auth_1.default, multer_1.default, imageConversion_1.default, productsController_1.editProduct);
+router.delete('/products/delete-product/:id', auth_1.default, productsController_1.deleteProduct);
 exports.default = router;
