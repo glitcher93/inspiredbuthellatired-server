@@ -13,7 +13,7 @@ export async function up(knex: Knex): Promise<void> {
                 .notNullable();
             table
                 .string("image")
-                .notNullable()
+                .notNullable();
             table
                 .string("size")
                 .notNullable();
@@ -61,31 +61,36 @@ export async function up(knex: Knex): Promise<void> {
                 .string("name")
                 .notNullable();
             table
-                .string("addressLineOne")
-                .notNullable()
+                .string("email")
+                .notNullable();
             table
-                .string("addressLineTwo")
+                .string("addressLineOne")
+                .notNullable();
+            table
+                .string("addressLineTwo");
             table
                 .string("city")
-                .notNullable()
+                .notNullable();
             table
                 .string("state")
-                .notNullable()
+                .notNullable();
             table
                 .string("postalCode")
-                .notNullable()
+                .notNullable();
             table
                 .string("phoneNumber")
-                .notNullable()
+                .notNullable();
             table
                 .string("paymentStatus")
-                .notNullable()
+                .notNullable();
             table
                 .boolean("isFulfilled")
                 .defaultTo(false)
                 .notNullable();
             table
                 .string("trackingNumber");
+            table
+                .string("serviceProvider");
             table
                 .timestamps(true, true, true);
         })

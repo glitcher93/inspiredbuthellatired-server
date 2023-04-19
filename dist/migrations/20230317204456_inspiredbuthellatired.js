@@ -71,6 +71,9 @@ function up(knex) {
                 .string("name")
                 .notNullable();
             table
+                .string("email")
+                .notNullable();
+            table
                 .string("addressLineOne")
                 .notNullable();
             table
@@ -96,6 +99,8 @@ function up(knex) {
                 .notNullable();
             table
                 .string("trackingNumber");
+            table
+                .string("serviceProvider");
             table
                 .timestamps(true, true, true);
         })
