@@ -98,13 +98,20 @@ const editProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 }
             });
         }
+        let stockBool;
+        if (inStock === "true") {
+            stockBool = true;
+        }
+        else {
+            stockBool = false;
+        }
         const editedProduct = {
             title: title && title !== foundProduct.title ? title : foundProduct.title,
             image: req.file ? `${serverURL}/images/${req.file.filename.replace(path_1.default.extname(req.file.filename), '.webp')}` : foundProduct.image,
             size: size && size !== foundProduct.size ? size : foundProduct.size,
             priceInCents: price && price !== Number(foundProduct.priceInCents) ? Number(price) * 100 : Number(foundProduct.priceInCents),
             type: type && type !== foundProduct.type ? type : foundProduct.type,
-            inStock: inStock && inStock !== foundProduct.inStock ? inStock : foundProduct.inStock
+            inStock: inStock && stockBool !== foundProduct.inStock ? stockBool : foundProduct.inStock
         };
         console.log(editedProduct);
         yield (0, db_1.default)("products").update(editedProduct).where({ id });

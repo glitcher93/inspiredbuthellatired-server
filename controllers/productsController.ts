@@ -90,13 +90,21 @@ export const editProduct = async (req: Request, res: Response) => {
             });
         }
 
+        let stockBool: boolean;
+
+        if (inStock === "true") {
+            stockBool = true;
+        } else {
+            stockBool = false;
+        }
+
         const editedProduct = {
             title: title && title !== foundProduct.title ? title : foundProduct.title,
             image: req.file! ? `${serverURL}/images/${req.file.filename.replace(path.extname(req.file.filename), '.webp')}` : foundProduct.image,
             size: size && size !== foundProduct.size ? size : foundProduct.size,
             priceInCents: price && price !== Number(foundProduct.priceInCents) ? Number(price) * 100 : Number(foundProduct.priceInCents),
             type: type && type !== foundProduct.type ? type : foundProduct.type,
-            inStock: inStock && inStock !== foundProduct.inStock ? inStock : foundProduct.inStock
+            inStock: inStock && stockBool !== foundProduct.inStock ? stockBool : foundProduct.inStock
         }
 
         console.log(editedProduct)
