@@ -12,8 +12,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteOrder = exports.addTracking = exports.getOrderById = exports.getRecentOrders = exports.getAllOrders = void 0;
+exports.cancelOrder = exports.deleteOrder = exports.addTracking = exports.getOrderById = exports.getRecentOrders = exports.getAllOrders = void 0;
 const db_1 = __importDefault(require("../db"));
+const stripe_1 = __importDefault(require("stripe"));
+const dotenv_1 = __importDefault(require("dotenv"));
+const transporter_1 = __importDefault(require("../utils/transporter"));
+dotenv_1.default.config();
+const secretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = new stripe_1.default(secretKey, { apiVersion: "2022-11-15" });
+const serverURL = process.env.SERVER_URL || 'http://localhost:8080';
 const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const orders = yield (0, db_1.default)('orders');
@@ -23,6 +30,7 @@ const getAllOrders = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             const formattedOrder = {
                 id: order.id,
                 orderId: order.orderId,
+                paymentIntentId: order.paymentIntentId,
                 paymentStatus: order.paymentStatus,
                 subtotal: order.subtotal,
                 total: order.total,
@@ -83,6 +91,7 @@ const getRecentOrders = (req, res) => __awaiter(void 0, void 0, void 0, function
                 id: order.id,
                 orderId: order.orderId,
                 subtotal: order.subtotal,
+                paymentIntentId: order.paymentIntentId,
                 paymentStatus: order.paymentStatus,
                 total: order.total,
                 shippingInfo: {
@@ -191,15 +200,35 @@ const getOrderById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getOrderById = getOrderById;
 const addTracking = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    const { trackingNumber } = req.body;
+    const { trackingNumber, serviceProvider } = req.body;
     try {
         yield (0, db_1.default)('orders')
             .where({ id })
             .update({
             trackingNumber,
+            serviceProvider,
             isFulfilled: true
         });
-        return res.status(200).json("Order updated").end();
+        const order = yield (0, db_1.default)('orders').where({ id });
+        const foundOrder = order[0];
+        const mailOptions = {
+            from: '"Inspiredbuthellatired" <inspiredbuthellatired@gmail.com>',
+            to: foundOrder.email,
+            bcc: 'alyssamallone@hotmail.com',
+            subject: `Tracking Info for Order #${foundOrder.orderId}`,
+            template: 'tracking_info',
+            context: {
+                logo: `${serverURL}/images/logo.webp`,
+                trackingNumber,
+                serviceProvider
+            }
+        };
+        transporter_1.default.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error);
+            }
+            return res.status(200).json("Order updated").end();
+        });
     }
     catch (err) {
         return res.status(400).json({ err }).end();
@@ -224,3 +253,9 @@ const deleteOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteOrder = deleteOrder;
+const cancelOrder = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { paymentIntentId } = req.body;
+    yield stripe.refunds.create({ payment_intent: paymentIntentId });
+    return res.status(200).json({ canceled: true }).end();
+});
+exports.cancelOrder = cancelOrder;

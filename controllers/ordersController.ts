@@ -1,6 +1,19 @@
 import { Request, Response } from 'express';
 import db from '../db';
 import { IItem, IItemHash } from '../utils/interfaces';
+import Stripe from "stripe";
+import dotenv from 'dotenv';
+import transporter from '../utils/transporter';
+import { Options } from 'nodemailer/lib/mailer';
+import { TemplateOptions } from 'nodemailer-express-handlebars';
+
+dotenv.config();
+
+const secretKey = process.env.STRIPE_SECRET_KEY as string;
+
+const stripe = new Stripe(secretKey, { apiVersion: "2022-11-15" });
+
+const serverURL = process.env.SERVER_URL as string || 'http://localhost:8080'
 
 export const getAllOrders = async (req: Request, res: Response) => {
     try {
@@ -11,6 +24,7 @@ export const getAllOrders = async (req: Request, res: Response) => {
             const formattedOrder = {
                 id: order.id,
                 orderId: order.orderId,
+                paymentIntentId: order.paymentIntentId,
                 paymentStatus: order.paymentStatus,
                 subtotal: order.subtotal,
                 total: order.total,
@@ -71,6 +85,7 @@ export const getRecentOrders = async (req: Request, res: Response) => {
                 id: order.id,
                 orderId: order.orderId,
                 subtotal: order.subtotal,
+                paymentIntentId: order.paymentIntentId,
                 paymentStatus: order.paymentStatus,
                 total: order.total,
                 shippingInfo: {
@@ -181,16 +196,39 @@ export const getOrderById = async (req: Request, res: Response) => {
 export const addTracking = async (req: Request, res: Response) => {
     const { id } = req.params;
 
-    const { trackingNumber } = req.body;
+    const { trackingNumber, serviceProvider } = req.body;
 
     try {
         await db('orders')
                 .where({id})
                 .update({
                     trackingNumber,
+                    serviceProvider,
                     isFulfilled: true
                 });
-        return res.status(200).json("Order updated").end();
+
+        const order = await db('orders').where({id});
+
+        const foundOrder = order[0];
+
+        const mailOptions: Options & TemplateOptions = {
+            from: '"Inspiredbuthellatired" <inspiredbuthellatired@gmail.com>',
+            to: foundOrder.email,
+            bcc: 'alyssamallone@hotmail.com',
+            subject: `Tracking Info for Order #${foundOrder.orderId}`,
+            template: 'tracking_info',
+            context: {
+                logo: `${serverURL}/images/logo.webp`,
+                trackingNumber,
+                serviceProvider
+            }
+        }
+        transporter.sendMail(mailOptions, (error, info) => {
+            if (error) {
+                console.log(error)
+            }
+            return res.status(200).json("Order updated").end();
+        })
     } catch (err) {
         return res.status(400).json({err}).end();
     }
@@ -212,4 +250,12 @@ export const deleteOrder = async (req: Request, res: Response) => {
     } catch (err) {
         return res.status(404).send("Order not found").end()
     }
+}
+
+export const cancelOrder = async (req: Request, res: Response) => {
+    const { paymentIntentId } = req.body;
+
+    await stripe.refunds.create({payment_intent: paymentIntentId});
+
+    return res.status(200).json({canceled: true}).end();
 }
