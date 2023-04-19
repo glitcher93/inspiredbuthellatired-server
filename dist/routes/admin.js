@@ -16,6 +16,7 @@ router.get('/recent-orders', auth_1.default, ordersController_1.getRecentOrders)
 router.get('/orders', auth_1.default, ordersController_1.getAllOrders);
 router.patch('/orders/add-tracking/:id', auth_1.default, ordersController_1.addTracking);
 router.delete('/orders/delete-order/:id', auth_1.default, ordersController_1.deleteOrder);
+router.post('/orders/cancel-order', auth_1.default, ordersController_1.cancelOrder);
 router.get('/products', auth_1.default, productsController_1.getAllProducts);
 router.post('/products/add-product', auth_1.default, multer_1.default, imageConversion_1.default, productsController_1.addProduct);
 router.patch('/products/edit-product/:id', auth_1.default, multer_1.default, imageConversion_1.default, productsController_1.editProduct);

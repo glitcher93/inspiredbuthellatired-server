@@ -1,6 +1,6 @@
 import express from 'express';
 import { login } from '../controllers/adminController';
-import { addTracking, deleteOrder, getAllOrders, getRecentOrders } from '../controllers/ordersController';
+import { addTracking, cancelOrder, deleteOrder, getAllOrders, getRecentOrders } from '../controllers/ordersController';
 import auth from '../middleware/auth';
 import { addProduct, deleteProduct, editProduct, getAllProducts } from '../controllers/productsController';
 import upload from '../middleware/multer';
@@ -17,6 +17,8 @@ router.get('/orders', auth, getAllOrders);
 router.patch('/orders/add-tracking/:id', auth, addTracking);
 
 router.delete('/orders/delete-order/:id', auth, deleteOrder);
+
+router.post('/orders/cancel-order', auth, cancelOrder);
 
 router.get('/products', auth, getAllProducts);
 
