@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Successful Purchase</title>
+    <script>
+        Handlebars.registerHelper("each", (context, options) => {
+            let ret = "";
+
+            for (let i = 0; i < context.length; i++) {
+                ret = ret + options.fn(context[i]);
+            }
+
+            return ret;
+        });
+    </script>
+</head>
+<body>
+    <img alt="inspiredbuthellatired" src={{logo}} />
+
+    <h1>Thank you for your purchase!</h1>
+
+    <h2>Order #{{orderId}}</h2>
+
+    <h3>Shipping Address:</h3>
+    <p>{{name}}</p>
+    <p>{{addressLineOne}}</p>
+    <p>{{adressLineTwo}}</p>
+    <p>{{city}}, {{state}}</p>
+    <p>{{postalCode}}</p>
+    <p>{{phoneNumber}}</p>
+
+    <h3>Order Summary:</h3>
+
+    {{#each items}}
+    <div style="border: 1px solid #000">
+        <img alt={{title}} src={{image}} />
+        <p>{{title}}</p>
+        <p>{{size}}</p>
+        <p>${{convertPrice priceInCents}}</p>
+        <p>{{quantity}}</p>
+        <p>${{calculateTotal priceInCents quantity}}</p>
+    </div>
+    {{/each}}
+
+    <p>Total: ${{convertPrice total}}</p>    
+    
+
+    <p><strong>*Please be advised that shipping is not included and will have to be paid upon receiving your order*</strong></p>
+
+    <p>If you have any questions please reply to this email.</p>
+</body>
+</html>
