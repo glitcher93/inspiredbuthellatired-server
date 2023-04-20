@@ -92,7 +92,7 @@ export const editProduct = async (req: Request, res: Response) => {
 
         let stockBool: boolean;
 
-        if (inStock === "true") {
+        if (inStock.toLowerCase() === "true") {
             stockBool = true;
         } else {
             stockBool = false;

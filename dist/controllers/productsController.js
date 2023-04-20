@@ -99,7 +99,7 @@ const editProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             });
         }
         let stockBool;
-        if (inStock === "true") {
+        if (inStock.toLowerCase() === "true") {
             stockBool = true;
         }
         else {
