@@ -17,12 +17,11 @@ const config: { [key: string]: Knex.Config } = {
   production: {
     client: "pg",
     connection: {
-      user: process.env.PG_USER,
-      host: process.env.PG_HOST,
-      database: process.env.PG_DB,
-      password: process.env.PG_PW,
-      port: Number(process.env.PG_PORT),
-      connectionString: process.env.DATABASE_URL,
+      user: process.env.PGUSER,
+      host: process.env.PGHOST,
+      database: process.env.PGDATABASE,
+      password: process.env.PGPASSWORD,
+      connectionString: `postgres://${process.env.PGUSER}:${process.env.PGPASSWORD}@${process.env.PGHOST}/${process.env.PGDATABASE}?options=project%3D${process.env.ENDPOINT_ID}`,
       ssl: { rejectUnauthorized: false }
     }
   }
